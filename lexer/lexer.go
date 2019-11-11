@@ -90,6 +90,8 @@ func (l *Lexer) skipWhitespace() {
 	}
 }
 
+// readNumber - mimics readIdentifier() except for its usuage of isDigit
+// instead of readLetter
 func (l *Lexer) readNumber() string {
 	position := l.position
 	for isDigit(l.ch) {
@@ -98,6 +100,7 @@ func (l *Lexer) readNumber() string {
 	return l.input[position:l.position]
 }
 
+// isDigit - helper method
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
 }
