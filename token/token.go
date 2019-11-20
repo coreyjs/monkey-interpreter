@@ -46,6 +46,10 @@ const (
 	COMMA     = ","
 	SEMICOLON = ";"
 
+	// Equavilancy
+	EQ     = "=="
+	NOT_EQ = "!="
+
 	LPAREN = "("
 	RPAREN = ")"
 	LBRACE = "{"
