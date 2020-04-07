@@ -1,6 +1,6 @@
 # monkey language interpreter
 
-
+Based on the book by Thorsten Ball, "Writing an Interpreter in Go"
 
 ```
 
