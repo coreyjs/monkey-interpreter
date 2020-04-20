@@ -1,5 +1,7 @@
 # monkey language interpreter
 
+![Go](https://github.com/coreyjs/monkey-interpreter/workflows/Go/badge.svg)
+
 Based on the book by Thorsten Ball, "Writing an Interpreter in Go"
 
 ```
