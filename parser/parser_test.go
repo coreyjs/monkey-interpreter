@@ -108,5 +108,47 @@ func TestReturnStatements(t *testing.T) {
 			returnStmt.TokenLiteral())
 		}
 	}
+}
 
+func TestIdentifierExpression(t *testing.T) {
+	/*
+	add(foobar, barfoo);
+	foobar + barfoo;
+	if (foobar) {
+	// [...]
+
+	Here we have identifiers as arguments in a function call, as operands in an infix expression and as
+	a standalone expression as part of a conditional.  Then can be used in all of these contexts, because
+	identifiers are expressions just like 1 + 2.  And just like any other expression identifiers
+	produce a value:  the evaluate to the value they are bound to
+	*/
+	input := "foobar;"
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program has not enough statements. got=%d", len(program.Statements))
+	}
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statments[0] is not as.EpxressionStatment. got=%T",
+			program.Statements[0])
+	}
+
+	ident, ok := stmt.Expression.(*ast.Identifier)
+	if !ok {
+		t.Fatalf("exp not *ast.Identifier.  got=%T", stmt.Expression)
+	}
+
+	if ident.Value != "foobar" {
+		t.Errorf("ident.Value not %s, got=%s", "foobar", ident.Value)
+	}
+
+	if ident.TokenLiteral() != "foobar" {
+		t.Errorf("ident.TokenLiteral not %s.  got=%s", "foobar", ident.TokenLiteral())
+	}
 }
