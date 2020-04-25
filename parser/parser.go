@@ -10,12 +10,12 @@ import (
 const (
 	_ int = iota
 	LOWEST
-	EQUALS 			// ==
-	LESSGREATER		// > or <
-	SUM				// +
-	PRODUCT			// *
-	PREFIX			// -X or !X
-	CALL			// myFunction(x)
+	EQUALS      // ==
+	LESSGREATER // > or <
+	SUM         // +
+	PRODUCT     // *
+	PREFIX      // -X or !X
+	CALL        // myFunction(x)
 )
 
 // Parser Basic struct of our Parser
@@ -29,7 +29,7 @@ type Parser struct {
 	// With these maps we can jsut check if the appropriate map (infix or prefix)
 	// has a parsing function associated with curToken.Type
 	prefixParseFns map[token.TokenType]prefixParseFn
-	infixParseFns map[token.TokenType]infixParseFn
+	infixParseFns  map[token.TokenType]infixParseFn
 }
 
 type (
@@ -53,7 +53,17 @@ func New(l *lexer.Lexer) *Parser {
 	p.nextToken()
 	p.nextToken()
 
+	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
+
+	// if we encounter a token of type token.IDENT the
+	// parsing function to call is `parseIdentifier`
+	p.registerPrefix(token.IDENT, p.parseIdentifier)
+
 	return p
+}
+
+func (p *Parser) parseIdentifier() ast.Expression {
+	return &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
 }
 
 func (p *Parser) registerPrefix(tokenType token.TokenType, fn prefixParseFn) {
@@ -149,7 +159,7 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 func (p *Parser) parseExpressionStatment() *ast.ExpressionStatement {
 	stmt := &ast.ExpressionStatement{Token: p.curToken}
 
-	stmt.Expression = p.parseExpression(LOWERST)
+	stmt.Expression = p.parseExpression(LOWEST)
 
 	// check for optional semicolon
 	if p.peekTokenIs(token.SEMICOLON) {
