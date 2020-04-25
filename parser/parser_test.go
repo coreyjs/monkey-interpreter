@@ -93,8 +93,8 @@ func TestReturnStatements(t *testing.T) {
 	checkParserErrors(t, p)
 
 	if len(program.Statements) != 3 {
-		t.Fatalf("program.Statements does not contain 3 statements. got=%d", 
-		len(program.Statements))
+		t.Fatalf("program.Statements does not contain 3 statements. got=%d",
+			len(program.Statements))
 	}
 
 	for _, stmt := range program.Statements {
@@ -104,23 +104,23 @@ func TestReturnStatements(t *testing.T) {
 			continue
 		}
 		if returnStmt.TokenLiteral() != "return" {
-			t.Errorf("return.TokenLiteral not 'return', got %q", 
-			returnStmt.TokenLiteral())
+			t.Errorf("return.TokenLiteral not 'return', got %q",
+				returnStmt.TokenLiteral())
 		}
 	}
 }
 
 func TestIdentifierExpression(t *testing.T) {
 	/*
-	add(foobar, barfoo);
-	foobar + barfoo;
-	if (foobar) {
-	// [...]
+		add(foobar, barfoo);
+		foobar + barfoo;
+		if (foobar) {
+		// [...]
 
-	Here we have identifiers as arguments in a function call, as operands in an infix expression and as
-	a standalone expression as part of a conditional.  Then can be used in all of these contexts, because
-	identifiers are expressions just like 1 + 2.  And just like any other expression identifiers
-	produce a value:  the evaluate to the value they are bound to
+		Here we have identifiers as arguments in a function call, as operands in an infix expression and as
+		a standalone expression as part of a conditional.  Then can be used in all of these contexts, because
+		identifiers are expressions just like 1 + 2.  And just like any other expression identifiers
+		produce a value:  the evaluate to the value they are bound to
 	*/
 	input := "foobar;"
 
@@ -150,5 +150,41 @@ func TestIdentifierExpression(t *testing.T) {
 
 	if ident.TokenLiteral() != "foobar" {
 		t.Errorf("ident.TokenLiteral not %s.  got=%s", "foobar", ident.TokenLiteral())
+	}
+}
+
+func TestIntegerLiteralExpression(t *testing.T) {
+	// 5;
+	// let x = 5; add(5, 10); 5 + 5 +5;
+	//Integer literals are expressions.  The value they produce
+	// is the integer itself.
+	input := "5"
+
+	l := lexer.New(input)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program has not enough statments. got=%d",
+			len(program.Statements))
+	}
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatment. got=%T",
+			program.Statements[0])
+	}
+
+	literal, ok := stmt.Expression.(*ast.IntegerLiteral)
+	if !ok {
+		t.Fatalf("exp not *ast.IntegerLiteral.  got=%T", stmt.Expression)
+	}
+
+	if literal.Value != 5 {
+		t.Errorf("literal.Value not %d. got=%d", 5, literal.Value)
+	}
+	if literal.TokenLiteral() != "5" {
+		t.Errorf("literal.TokenLiteral not %s.  got=%s", "5",
+			literal.TokenLiteral())
 	}
 }
