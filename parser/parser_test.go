@@ -188,3 +188,23 @@ func TestIntegerLiteralExpression(t *testing.T) {
 			literal.TokenLiteral())
 	}
 }
+
+func TestParsingPrefixExpressions(t *testing.T) {
+	// -5; !foobar; 5 + -10;
+	// <prefix operator><expression>
+	prefixTests := []struct {
+		input        string
+		operator     string
+		integerValue int64
+	}{
+		{"!5", "!", 5},
+		{"-15", "-", 15},
+	}
+
+	for _, tt := range prefixTests {
+		l := lexer.New(tt.input)
+		p := New(l)
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
+	}
+}
