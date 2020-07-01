@@ -5,7 +5,7 @@
 Based on the book by Thorsten Ball, "Writing an Interpreter in Go"
 
 
-This is in progress as of 4/21/20
+This is in progress as of 7/1/20
 
 ```
 
